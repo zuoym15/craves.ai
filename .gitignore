@@ -1,4 +1,6 @@
 data
 checkpoint
 visualization
-raw_data
+miscs/raw_data
+miscs/real_arm_experiment
+miscs/paper_related

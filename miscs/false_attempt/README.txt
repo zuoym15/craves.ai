@@ -1,0 +1,1 @@
+Just some rubbish created when working with the checkerboard annotation. Maybe useful one day :)

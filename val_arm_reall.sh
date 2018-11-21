@@ -1,0 +1,1 @@
+CUDA_VISIBLE_DEVICES=0 python train_arm.py -a hg --stacks 2 --blocks 1 --num-classes 17 --checkpoint ./checkpoint/arm/20181116 --data-dir ./data/test_20181024 --meta-dir ./data/meta/17_vertex --sample-img-dir ./visualization/20181116/test_20181024 --resume ./checkpoint/arm/20181116/checkpoint.pth.tar -e -f --training-set-percentage 0 --camera-type video_shifted

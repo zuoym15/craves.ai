@@ -130,6 +130,7 @@ class Arm(data.Dataset):
     def __getitem__(self, index):
         #actor_name = "RobotArmActor_3"
         #color = [0, 255, 63]
+        scale_factor = 60.0
 
         if self.multi_scale:
             scale = self.scales[index % len(self.scales)]
@@ -192,7 +193,7 @@ class Arm(data.Dataset):
                 x0, x1, y0, y1 = bb[0][0], bb[1][0], bb[0][1], bb[1][1]
 
             c = np.array([(x0+x1), (y0+y1)])/2
-            s = np.sqrt((y1-y0)*(x1-x0))/60.0
+            s = np.sqrt((y1-y0)*(x1-x0))/scale_factor
             r = 0
 
             if self.is_train:
@@ -248,7 +249,7 @@ class Arm(data.Dataset):
                 joints = self.anno[self.F[index]]
                 x0, y0, x1, y1 = joints[0][0], joints[0][1], joints[1][0], joints[1][1]
                 c = np.array([(x0+x1), (y0+y1)])/2
-                s = np.sqrt((y1-y0)*(x1-x0))/60.0
+                s = np.sqrt((y1-y0)*(x1-x0))/scale_factor
                 if self.multi_scale:
                     s = s*scale
 

@@ -15,11 +15,11 @@ def read_json(file_dir):
                 F.append(file)
     return L, F
 
-def cam_est(ang, scale = 500):
+def cam_est(ang, scale = 500): #calculate the position of the camera given rotation
     cam_est = scale*np.array([cos(ang[0])*cos(ang[1]), cos(ang[0])*sin(ang[1]), sin(ang[0])])
     return cam_est
 
-def make_rotation(pitch, yaw, roll):
+def make_rotation(pitch, yaw, roll): #return a the rotation matrix given roatation angles
     # Convert from degree to radius
     #pitch = pitch / 180.0 * np.pi
     #yaw = yaw / 180.0 * np.pi
@@ -80,7 +80,7 @@ def draw_labelmap(img, pt, sigma, type='Gaussian'):
     img[img_y[0]:img_y[1], img_x[0]:img_x[1]] = g[g_y[0]:g_y[1], g_x[0]:g_x[1]]
     return img
 
-def Opt(x,num_joints,A,ang,cam,c,d,uv,meta,estimate_cam, estimate_intrinsic, Reprojection):
+def Opt(x,num_joints,A,ang,cam,c,d,uv,meta,estimate_cam, estimate_intrinsic, Reprojection): #The Optimization function. Plz refer to the paper for loss defination. 
     if estimate_intrinsic:
         A = np.matrix(
             [[x[num_joints+6], x[num_joints+8], 0],
@@ -145,7 +145,7 @@ def Opt(x,num_joints,A,ang,cam,c,d,uv,meta,estimate_cam, estimate_intrinsic, Rep
     loss = np.ravel(loss)
     return loss
 
-def estimate(x0, cam, ang, uv, estimate_cam, estimate_intrinsic, cam_type, Reprojection, valid_keypoint_list, meta_dir):
+def estimate(x0, cam, ang, uv, estimate_cam, estimate_intrinsic, cam_type, Reprojection, valid_keypoint_list, meta_dir): #Read the data for a frame and solve Opt() with lm alogrithm.
     with open(os.path.join(meta_dir, 'skeleton.json')) as f:
         meta = json.load(f)
 
@@ -201,8 +201,8 @@ def heatmap_vis(heatmap): #for visualization only
 
         cv2.imshow('img', vis)
         cv2.waitKey(0)
-
-def uv_from_heatmap(heatmap, labelmap = None):
+ 
+def uv_from_heatmap(heatmap, labelmap = None): #calculate the max responding position from a numpy matrix
     if labelmap is not None:
         heatmap = np.multiply(heatmap, labelmap)
 
@@ -219,7 +219,7 @@ def uv_from_heatmap(heatmap, labelmap = None):
 
     return uv, score
 
-def get_pred(data_dir, filename, pred_from_heatmap):
+def get_pred(data_dir, filename, pred_from_heatmap): #read the 2d keypoint prediction from files
     #shape of uv: 2 * 17
     pred_dir = os.path.join(data_dir, 'preds', filename)
     with open(pred_dir,'r') as f:
@@ -259,7 +259,7 @@ def get_pred(data_dir, filename, pred_from_heatmap):
 def d2tod3(data_dir, meta_dir, estimate_cam = True, estimate_intrinsic = False, num_joints = 4, cam_type = 'video', keypoint_list = list(range(17)), init = None, pred_from_heatmap = False, em_test = False):
     num_hit = []
     
-    thres = 2 if cam_type == 'synthetic' else 20
+    thres = 2 if cam_type == 'synthetic' else 20 #threshold for ending loop
 
     result_save_dir = os.path.join(data_dir, 'd3_preds')
     if not os.path.isdir(result_save_dir):
@@ -443,20 +443,3 @@ def d2tod3(data_dir, meta_dir, estimate_cam = True, estimate_intrinsic = False, 
         json.dump({'hit':num_hit, 'd3_pred':d3_pred, 'file_name_list':file_name_list}, f)
 
     return num_hit, d3_pred, file_name_list
-
-if __name__ == "__main__":
-    data_dir = 'C:\\Users\\zuoyi\\Desktop\\Arm\\2dto3d\\20180819\\real_0817'
-    pred_dir = os.path.join(data_dir, 'preds')
-    meta_dir = 'C:\\Users\\zuoyi\\Desktop\\Arm\\2dto3d\\meta_20180814'
-    estimate_cam = True
-    estimate_intrinsic = False 
-    num_joints = 4
-    #num_joints = 0
-    #cam_type = 'synthetic'
-    cam_type = 'video'
-    #keypoint_list = [0,1,2,3,4,5,6,9,10,11,12,13]
-    #keypoint_list = [0,1,2,3,4,6,9,10,11,12,13]
-    keypoint_list = list(range(17))
-
-    d2tod3(data_dir, meta_dir)
-

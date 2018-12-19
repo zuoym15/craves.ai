@@ -25,9 +25,6 @@ from pose.utils.osutils import mkdir_p, isfile, isdir, join
 from pose.utils.imutils import batch_with_heatmap, sample_with_heatmap
 from pose.utils.transforms import fliplr, flip_back, multi_scale_merge, align_back
 from pose.utils.d2tod3 import d2tod3 #3-d pose estimation
-from pose.utils.netutils import cam_client, send_command #read image from remote PC
-from pose.utils.color_thresholding import get_d3_object
-# from pose.utils.route_planning import get_rotation_angle
 import pose.models as models
 import pose.datasets as datasets
 
@@ -48,9 +45,7 @@ def main(args):
                 item.append(item[0])
         assert len(item) == num_datasets
 
-    #scales = [0.7, 0.8, 0.9, 1, 1.2, 1.4, 1.6]
     scales = [0.7, 0.85, 1, 1.3, 1.6]
-    #scales = [1.0, ]
 
     if args.meta_dir == '':
         args.meta_dir = args.data_dir #if not specified, assume meta info is stored in data dir.
@@ -424,18 +419,18 @@ if __name__ == '__main__':
                         help='model architecture: ' +
                             ' | '.join(model_names) +
                             ' (default: resnet18)')
-    parser.add_argument('-s', '--stacks', default=8, type=int, metavar='N',
+    parser.add_argument('-s', '--stacks', default=2, type=int, metavar='N',
                         help='Number of hourglasses to stack')
     parser.add_argument('--features', default=256, type=int, metavar='N',
                         help='Number of features in the hourglass')
     parser.add_argument('-b', '--blocks', default=1, type=int, metavar='N',
                         help='Number of residual modules at each location in the hourglass')
-    parser.add_argument('--num-classes', default=16, type=int, metavar='N',
+    parser.add_argument('--num-classes', default=17, type=int, metavar='N',
                         help='Number of keypoints')
     # Training strategy
     parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
                         help='number of data loading workers (default: 4)')
-    parser.add_argument('--epochs', default=90, type=int, metavar='N',
+    parser.add_argument('--epochs', default=30, type=int, metavar='N',
                         help='number of total epochs to run')
     parser.add_argument('--start-epoch', default=0, type=int, metavar='N',
                         help='manual epoch number (useful on restarts)')
@@ -449,11 +444,11 @@ if __name__ == '__main__':
                         help='momentum')
     parser.add_argument('--weight-decay', '--wd', default=0, type=float,
                         metavar='W', help='weight decay (default: 0)')
-    parser.add_argument('--schedule', type=int, nargs='+', default=[60, 90],
+    parser.add_argument('--schedule', type=int, nargs='+', default=[20, ],
                         help='Decrease learning rate at these epochs.')
     parser.add_argument('--gamma', type=float, default=0.1,
                         help='LR is multiplied by gamma on schedule.')
-    parser.add_argument('--training-set-percentage', nargs = '+', type=float, default=[0.9],
+    parser.add_argument('--training-set-percentage', nargs = '+', type=float, default=[0.9, ],
                         help='training set percentage')              
     # Data processing
     parser.add_argument('-f', '--flip', dest='flip', action='store_true',
@@ -480,7 +475,7 @@ if __name__ == '__main__':
     parser.add_argument('-c', '--checkpoint', default='checkpoint', type=str, metavar='PATH',
                         help='path to save checkpoint (default: checkpoint)')
     parser.add_argument('--data-dir', type=str, nargs='+' ,metavar='PATH', help='path where data is saved')
-    parser.add_argument('--meta-dir', type=str, nargs='+' ,metavar='PATH', help='path where meta data is saved', default = '')
+    parser.add_argument('--meta-dir', type=str, nargs='+' ,metavar='PATH', help='path where meta data is saved', default = './data/meta/17_vertex')
     parser.add_argument('--sample-img-dir', type=str, metavar='PATH', help='path for saving sample images for visualization')
     parser.add_argument('--random-bg-dir', default = '', type=str, metavar='PATH', help='path from which random background for finetuneing is sampled')
     parser.add_argument('--resume', default='', type=str, metavar='PATH',

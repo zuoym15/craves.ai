@@ -9,21 +9,22 @@ import time
 import pose.datasets as datasets
 from pose.utils.imutils import *
 from pose.utils.transforms import multi_scale_merge
+from pose.utils.evaluation import *
 
 if __name__ == "__main__":
 
 
-    db_root_dir = './data/gan_20181006/'
+    db_root_dir = './data/20181107/'
     #db_root_dir = 'C:/Users/Yiming/Documents/OWIMap'
     db_root_dir_2 = './data/ft_20181105'
     meta_dir = './data/meta/17_vertex'
     bg_dir = 'C:/Users/Yiming/Documents/test2017'
 
-    cams = 'FusionCameraActor3'
+    cams = 'FusionCameraActor3_2'
 
-    Arm = datasets.Arm(db_root_dir, meta_dir, bg_dir, cams, use_bbox = False, train = True, scales = [0.7, 0.8, 0.9, 1, 1.2, 1.4, 1.6], multi_scale = False, real_img_finetune = False, training_set_percentage = 0.9)
+    Arm = datasets.Arm(db_root_dir, meta_dir, bg_dir, cams, anno_type = '3d', train = True, scales = [0.7, 0.8, 0.9, 1, 1.2, 1.4, 1.6], multi_scale = False, training_set_percentage = 0.9)
 
-    Arm2 = datasets.Arm(db_root_dir_2, meta_dir, bg_dir, cams, use_bbox = False, train = True, scales = [0.7, 0.8, 0.9, 1, 1.2, 1.4, 1.6], multi_scale = False, real_img_finetune = True, training_set_percentage = 1.0, replace_bg=True)
+    # Arm2 = datasets.Arm(db_root_dir_2, meta_dir, bg_dir, cams, use_bbox = False, train = True, scales = [0.7, 0.8, 0.9, 1, 1.2, 1.4, 1.6], multi_scale = False, real_img_finetune = True, training_set_percentage = 1.0, replace_bg=True)
 
     #Arm = datasets.Concat(datasets = (Arm, Arm2), ratio = None)
 

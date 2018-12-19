@@ -15,6 +15,7 @@ import json
 from pose.utils.osutils import *
 from pose.utils.imutils import *
 from pose.utils.transforms import *
+from pose.utils.evaluation import final_preds, transform_preds #for debug only
 
 import sys
 from unreal.arm import get_joint_vertex_2d
@@ -223,6 +224,8 @@ class Arm(data.Dataset):
             inp = crop(img, c, s, [self.inp_res, self.inp_res], rot=r)
             inp = color_normalize(inp, self.mean, self.std)
 
+            # print(pts)
+
             tpts = pts.copy()
             target = torch.zeros(nparts, self.out_res, self.out_res)
             for i in range(nparts):
@@ -230,6 +233,8 @@ class Arm(data.Dataset):
                 if tpts[i, 1] > 0:
                     tpts[i, 0:2] = to_torch(transform(tpts[i, 0:2], c, s, [self.out_res, self.out_res], rot=r))
                     target[i] = draw_labelmap(target[i], tpts[i], self.sigma, type=self.label_type)
+
+            # print(transform_preds(torch.from_numpy(tpts), c, s, [64, 64]))
                     
             # Meta info
             meta = {'index' : index, 'pts' : pts, 'tpts' : tpts, 'center':c, 'original_size':original_size,

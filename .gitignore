@@ -1,4 +1,5 @@
-data
+data/*
+!data/meta/
 checkpoint
 visualization
 miscs/raw_data

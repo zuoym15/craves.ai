@@ -1,0 +1,26 @@
+{
+"synthetic":
+{
+"FocalLength":[320, 320],
+"PrincipalPoint":[320, 240],
+"RadialDistortion":[0, 0]
+},
+"image":
+{
+"FocalLength":[1453.30109593542, 1455.91759983196],
+"PrincipalPoint":[983.893188364236, 521.469768484993],
+"RadialDistortion":[0.0646366005067056, -0.182393231163707]
+},
+"video":
+{
+"FocalLength":[977.496557857730, 975.683554872172],
+"PrincipalPoint":[650.413835779359, 343.392689455976],
+"RadialDistortion":[0.0611262717388530, -0.169582705920778]
+},
+"video_shifted":
+{
+"FocalLength":[977.496557857730, 975.683554872172],
+"PrincipalPoint":[640.0, 360.0],
+"RadialDistortion":[0.0611262717388530, -0.169582705920778]
+}
+}

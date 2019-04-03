@@ -52,5 +52,34 @@ class Concat(data.Dataset):
 
         print('merging {} datasets, total length: {}'.format(len(self.datasets), self.length))
 
+class Concat_w_class(data.Dataset): #concatenated dataset with class label, only support concating 2 datasets(sourse and target)
+
+    def __init__(self, datasets):
+        self.datasets = datasets
+        self.reset()
+
+    def __getitem__(self, index):
+        return self.datasets[0][self.choice_list[0][index]], self.datasets[1][self.choice_list[1][index]]
+
+    def __len__(self):
+        return self.length
+
+    def reset(self):
+        self.lengths = [len(d) for d in self.datasets]
+
+        if sum(self.lengths) == 0:
+            self.length = 0
+            return
+
+        self.valid_length = min(self.lengths)#the subset that depletes first
+        self.choice_list = []
+        for i in range(len(self.datasets)):
+            self.choice_list.append(np.random.choice(self.lengths[i], self.valid_length, replace=False))
+            print('length of dataset {} : {}'.format(i+1, self.valid_length))
+
+        self.length = self.valid_length
+
+        print('merging {} datasets, total length: {}'.format(len(self.datasets), self.length))
+
             
             

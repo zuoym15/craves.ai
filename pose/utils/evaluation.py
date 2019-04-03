@@ -55,7 +55,7 @@ def accuracy(output, target, idxs, thr=0.5):
     '''
     preds   = get_preds(output)
     gts     = get_preds(target)
-    norm    = torch.ones(preds.size(0))*output.size(3)/10
+    norm    = torch.ones(preds.size(0))*output.size(3)/4.0
     dists   = calc_dists(preds, gts, norm)
 
     acc = torch.zeros(len(idxs)+1)
@@ -63,7 +63,7 @@ def accuracy(output, target, idxs, thr=0.5):
     cnt = 0
 
     for i in range(len(idxs)):
-        acc[i+1] = dist_acc(dists[idxs[i]-1])
+        acc[i+1] = dist_acc(dists[idxs[i]-1], thr=thr)
         if acc[i+1] >= 0: 
             avg_acc = avg_acc + acc[i+1]
             cnt += 1
@@ -126,22 +126,14 @@ def d3_acc(preds, gts):
 
         res[0:7] = np.abs((res[0:7] + 180.0) % 360.0 - 180.0)
 
-        if not np.any(res[0:4]>20): #false prediction
+        if not np.any(res[0:4]>10): #false prediction
             acc += res
             hit = hit + 1
 
         else:
             miss_list.append(i)
-
-        # else:
-        #     print(99 - i)
-
-    print('hit:' + str(hit) + '/' + str(num_samples))
-
-    print('miss ids:')
-    print(miss_list)
              
-    return acc/hit
+    return (acc/hit)[0:4]
 
 class AverageMeter(object):
     """Computes and stores the average and current value"""

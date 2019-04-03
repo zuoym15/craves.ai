@@ -72,19 +72,20 @@ class background_replace(object):
         return img
 
 if __name__ == "__main__":
-    obj = background_replace('./sample_bg')
-    #data_dir = 'C:\\Users\\Yiming\\Desktop\\arm_miscs\\data\\img\\000'
-    data_dir = 'C:\\Users\\Yiming\\Desktop\\arm-pose\\data\\real_20181010'
+    obj = background_replace('C:/Users/Yiming/Documents/test2017')
+    target_dir = "./replaced"
+    data_dir = 'C:/Users/Yiming/Desktop/arm_pose_research_script/data/real_20181010'
     L = obj.find_img(data_dir)
     anno = {}
     for i in range(len(L)):
         img_dir = L[i]
         img = cv2.imread(img_dir)
-        anno[os.path.basename(img_dir)] = obj.mask2bb(obj.create_mask(img, 'white'))
+        #anno[os.path.basename(img_dir)] = obj.mask2bb(obj.create_mask(img, 'white'))
+        cv2.imwrite(os.path.join(target_dir, os.path.basename(img_dir)), obj.replace(img, 'white'))
         #cv2.imshow('img', obj.replace(img, 'white'))
         #cv2.waitKey(0)
         print('processing {}/{}'.format(i, len(L)))
 
-    with open(os.path.join(data_dir, 'pts.json'), 'w') as f:
-        json.dump(anno, f)
+    # with open(os.path.join(data_dir, 'pts.json'), 'w') as f:
+    #     json.dump(anno, f)
 

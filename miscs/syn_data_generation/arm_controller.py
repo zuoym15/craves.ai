@@ -87,7 +87,7 @@ def data_sampler(num_data, rand_cam = True):
 
             client.request('vset /data_capture/capture_frame')
             print("#{sample_id}: {rotation}, {base}, {elbow}，{wrist}".format(**locals()))
-            time.sleep(0.5)
+            time.sleep(0.1)
 
             sample_id+=1
 
@@ -178,7 +178,7 @@ def main(data_dir, meta_dir, img_type = 'video'):
 
         cv2.imwrite(os.path.join(data_dir, 'syn', os.path.splitext(file_name)[0] + '.jpg'), img)
 
-        time.sleep(0.5)
+        time.sleep(0.2)
 
 def training_data_from_d3_preds(d3_pred_dir, img_dir, training_data_dir):
     client.request('vset /camera/1/fov 66.5')
@@ -239,8 +239,9 @@ if __name__ == "__main__":
     
     #main(data_dir = 'C:\\Users\\Yiming Zuo\\Desktop\\Arm\\sample_img\\20180819\\real_0817', meta_dir = 'C:\\Users\\Yiming Zuo\\Desktop\\Arm\\sample_img\\meta_20180814')
     client.connect()
-    training_data_from_d3_preds('C:/Users/Yiming/Desktop/arm-pose/visualization/20181106/youtube_20181105/d3_pred.json', 'C:/Users/Yiming/Desktop/arm-pose/data/youtube_20181105/imgs', 
-    'C:\\Users\\Yiming\\Documents\\OWIMap')
+    data_sampler(20000)
+    #training_data_from_d3_preds('C:/Users/Yiming/Desktop/arm-pose/visualization/20181106/youtube_20181105/d3_pred.json', 'C:/Users/Yiming/Desktop/arm-pose/data/youtube_20181105/imgs', 
+    #'C:\\Users\\Yiming\\Documents\\OWIMap')
     # data_sampler(1000, False)
     #visualizer((0, 0, 0, 0, 34.37299479, 159.74876758, 4.87261678, -459.43353766, 144.24237348, 335.00689175))
     #im = visualizer((0,0,0,0,30,0,0,426,0,250))

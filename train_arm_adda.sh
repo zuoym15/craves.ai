@@ -1,0 +1,1 @@
+CUDA_VISIBLE_DEVICES=0 python train_arm_adda.py -a hg --stacks 2 --blocks 1 --num-classes 17 --checkpoint ./checkpoint/arm/20190131 --resume ./checkpoint/arm/20181114/checkpoint.pth.tar --data-dir ./data/20181006 ./data/real_20190201 --meta-dir ./data/meta/17_vertex --epoch 40 --schedule 20 --train-batch 6 --test-batch 32 --anno-type 3D none --training-set-percentage 0.9 1.0

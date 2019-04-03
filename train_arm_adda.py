@@ -10,6 +10,7 @@ import scipy
 import json
 import numpy as np
 import cv2
+from collections import deque
 
 import torch
 import torch.nn.parallel
@@ -28,6 +29,37 @@ from pose.utils.d2tod3 import d2tod3 #3-d pose estimation
 import pose.models as models
 import pose.datasets as datasets
 
+sys.path.append('C:/Users/Yiming/Documents/GitHub/cycada_release') 
+
+from cycada.models import Discriminator
+
+def make_variable(tensor, volatile=False, requires_grad=True):
+    if torch.cuda.is_available():
+        tensor = tensor.cuda()
+    if volatile:
+        requires_grad = False
+    return torch.autograd.Variable(tensor, volatile=volatile, requires_grad=requires_grad)
+
+def supervised_loss(score, label, weights=None):
+    loss_fn_ = torch.nn.NLLLoss(weight=weights, size_average=True, 
+            ignore_index=255)
+    loss = loss_fn_(torch.nn.functional.log_softmax(score, dim=1), label)
+    return loss
+
+
+discriminator = Discriminator(input_dim=256, output_dim=2, 
+            pretrained=False, weights_init=None).cuda()
+
+opt_dis = torch.optim.SGD(discriminator.parameters(), lr=0.0001, 
+            momentum=0.9, weight_decay=0.0005)
+
+accuracies_dom = deque(maxlen=100)
+
+
+cur_iter = 0
+max_iter = 1e4
+exit_flag = False
+
 model_names = sorted(name for name in models.__dict__
     if name.islower() and not name.startswith("__")
     and callable(models.__dict__[name]))
@@ -35,7 +67,6 @@ model_names = sorted(name for name in models.__dict__
 
 
 best_acc = 0
-pck_threshold = 0.2
 
 
 def main(args):
@@ -56,14 +87,14 @@ def main(args):
         if args.save_heatmap:
             folders_to_create.append('heatmaps')
         for folder_name in folders_to_create:
-            if not os.path.isdir(os.path.join(args.save_result_dir, folder_name)):
-                print('creating path: ' + os.path.join(args.save_result_dir, folder_name))
-                os.mkdir(os.path.join(args.save_result_dir, folder_name))
+            if not os.path.isdir(os.path.join(args.sample_img_dir, folder_name)):
+                print('creating path: ' + os.path.join(args.sample_img_dir, folder_name))
+                os.mkdir(os.path.join(args.sample_img_dir, folder_name))
 
     idx = range(args.num_classes)
     global best_acc
 
-    cams = ['FusionCameraActor3_2']
+    cams = ['FusionCameraActor3']
 
     # create checkpoint dir
     if not isdir(args.checkpoint):
@@ -71,7 +102,8 @@ def main(args):
 
     # create model
     print("==> creating model '{}', stacks={}, blocks={}".format(args.arch, args.stacks, args.blocks))
-    model = models.__dict__[args.arch](num_stacks=args.stacks, num_blocks=args.blocks, num_classes=args.num_classes)
+    model = models.__dict__['hg_feat'](num_stacks=args.stacks, num_blocks=args.blocks, num_classes=args.num_classes)
+    
 
     model = torch.nn.DataParallel(model).cuda()
 
@@ -117,9 +149,10 @@ def main(args):
 
     # Data loading code
     train_loader = torch.utils.data.DataLoader(
-        datasets.Concat(datasets = train_set_list, ratio = args.ratio),
+        datasets.Concat_w_class(datasets = train_set_list),
         batch_size=args.train_batch, shuffle=True,
         num_workers=args.workers, pin_memory=True)
+
 
     print("size of training set:{}".format(len(train_loader)))
 
@@ -127,7 +160,7 @@ def main(args):
         args.test_batch = args.test_batch*len(scales)
     
     val_loader = torch.utils.data.DataLoader(
-        datasets.Concat(datasets = val_set_list, ratio = None),
+        datasets.Concat(datasets = val_set_list),
         batch_size=args.test_batch, shuffle=False,
         num_workers=args.workers, pin_memory=True)
 
@@ -135,18 +168,19 @@ def main(args):
 
     if args.evaluate:
         print('\nEvaluation only') 
-        # if not args.compute_3d:
-        loss, acc = validate(val_loader, model, criterion, args.num_classes, idx, args.save_result_dir,  args.meta_dir, args.anno_type, args.flip, args.evaluate, scales, args.multi_scale, args.save_heatmap)
+        if not args.compute_3d:
+            loss, acc = validate(val_loader, model, criterion, args.num_classes, idx, args.sample_img_dir,  args.meta_dir, args.anno_type,
+                                        args.flip, args.evaluate, scales, args.multi_scale, args.save_heatmap)
 
         if args.compute_3d:
 
             preds = []
             gts = []
-            hit, d3_pred, file_name_list = d2tod3(data_dir = args.save_result_dir, meta_dir = args.meta_dir[0], cam_type = args.camera_type, pred_from_heatmap=False, em_test=False)
+            hit, d3_pred, file_name_list = d2tod3(data_dir = args.sample_img_dir, meta_dir = args.meta_dir[0], cam_type = args.camera_type, pred_from_heatmap=False, em_test=False)
 
-            # validate the 3d reconstruction accuracy
+            #validate the 3d reconstruction accuracy
             
-            with open(os.path.join(args.save_result_dir, 'd3_pred.json'), 'r') as f:
+            with open(os.path.join(args.sample_img_dir, 'd3_pred.json'), 'r') as f:
                 obj = json.load(f)
                 hit, d3_pred, file_name_list = obj['hit'], obj['d3_pred'], obj['file_name_list']
 
@@ -155,7 +189,7 @@ def main(args):
                 with open(os.path.join(args.data_dir[0], 'angles',file_name),'r') as f:
                     gts.append(json.load(f))
 
-            print('average error in angle: [base, elbow, ankle, wrist]:{}'.format(d3_acc(preds, gts)))
+            print(d3_acc(preds, gts))
             
         return
 
@@ -173,9 +207,9 @@ def main(args):
         train_loss, train_acc = train(train_loader, model, criterion, optimizer, idx, args.flip)
 
         # evaluate on validation set
-        valid_loss, valid_acc = validate(val_loader, model, criterion, args.num_classes, idx, args.save_result_dir, args.meta_dir, args.anno_type, args.flip, args.evaluate)
+        valid_loss, valid_acc = validate(val_loader, model, criterion, args.num_classes, idx, args.sample_img_dir, args.meta_dir, args.anno_type, args.flip, args.evaluate)
 
-        #If concatenated dataset is used, re-random after each epoch
+        # If concatenated dataset is used, re-random after each epoch
         train_loader.dataset.reset(), val_loader.dataset.reset()
 
         # append logger file
@@ -192,12 +226,17 @@ def main(args):
             'optimizer' : optimizer.state_dict(),
         }, is_best, checkpoint=args.checkpoint)
 
+        # if exit_flag:
+        #     break
+
     logger.close()
     logger.plot(['Train Acc', 'Val Acc'])
     savefig(os.path.join(args.checkpoint, 'log.eps'))
 
 
 def train(train_loader, model, criterion, optimizer, idx, flip=True):
+    # global cur_iter, max_iter, exit_flag
+
     batch_time = AverageMeter()
     data_time = AverageMeter()
     losses = AverageMeter()
@@ -210,28 +249,111 @@ def train(train_loader, model, criterion, optimizer, idx, flip=True):
 
     gt_win, pred_win = None, None
     bar = Bar('Processing', max=len(train_loader))
-    for i, (inputs, target, meta) in enumerate(train_loader):
+    for i, ((input_s, target_s, _), (input_t, _, _)) in enumerate(train_loader):
+        # cur_iter += 1
+        # if cur_iter >= max_iter:
+        #     exit_flag = True
+        #     break
+
         # measure data loading time
         data_time.update(time.time() - end)
 
-        input_var = torch.autograd.Variable(inputs.cuda())
-        target_var = torch.autograd.Variable(target.cuda(async=True))
+        input_var_s = torch.autograd.Variable(input_s.cuda(), requires_grad=False)
+        target_var_s = torch.autograd.Variable(target_s.cuda(), requires_grad=False)
+        input_var_t = torch.autograd.Variable(input_t.cuda(), requires_grad=False)
 
-        # compute output
-        output = model(input_var)
-        score_map = output[-1].data.cpu()
+        #update discriminator#
+        
 
-        loss = criterion(output[0], target_var)
-        for j in range(1, len(output)):
-            loss += criterion(output[j], target_var)
-        acc = accuracy(score_map, target, idx, pck_threshold)
-
-        # measure accuracy and record loss
-        losses.update(loss.item(), inputs.size(0))
-        acces.update(acc[0], inputs.size(0))
-
-        # compute gradient and do SGD step
+        opt_dis.zero_grad()
         optimizer.zero_grad()
+
+        output_s, feat_s = model(input_var_s)
+        dis_score_s = discriminator(feat_s.detach())
+
+        output_t, feat_t = model(input_var_t)
+        dis_score_t = discriminator(feat_t.detach())
+
+
+
+        # output_s = model(input_var_s)[-1].detach()
+        # output_t = model(input_var_t)[-1].detach()
+        # dis_score_s = discriminator(output_s)
+        # dis_score_t = discriminator(output_t)
+        dis_pred_concat = torch.cat((dis_score_s, dis_score_t))
+
+        #for visualzition
+        # meanstd_file = './datasets/arm/mean.pth.tar'
+        # meanstd = torch.load(meanstd_file)
+        # mean = meanstd['mean']
+        # inp = input_t[0]
+        # score_map = output_t.data.cpu()
+        # pred = score_map[0]
+        # for t, m in zip(inp, mean):
+        #     t.add_(m)
+        # scipy.misc.imsave('C:/Users/Yiming/Desktop/tmp/0.jpg', sample_with_heatmap(inp, pred))
+
+        batch_t,_,h,w = dis_score_t.size()
+        batch_s,_,_,_ = dis_score_s.size()
+        dis_label_concat = make_variable(
+                torch.cat(
+                    [torch.ones(batch_s,h,w).long(), 
+                    torch.zeros(batch_t,h,w).long()]
+                    ), requires_grad=False)
+
+        # compute loss for discriminator
+        loss_dis = supervised_loss(dis_pred_concat, dis_label_concat)
+        (1.0 * loss_dis).backward()
+
+        opt_dis.step()
+
+        pred_dis = torch.squeeze(dis_pred_concat.max(1)[1])
+        dom_acc = (pred_dis == dis_label_concat).float().mean().item() 
+
+        accuracies_dom.append(dom_acc * 100.0)
+        
+        print('Updating D with adversarial loss, acc = {}, mean = {}'.format(dom_acc * 100.0, np.mean(accuracies_dom)))
+
+        ###########################
+        # Optimize Target Network #
+        ###########################
+        
+        dom_acc_thresh = 65
+
+        if np.mean(accuracies_dom) > dom_acc_thresh:
+
+            print('Updating G with adversarial loss')
+
+            optimizer.zero_grad()
+            opt_dis.zero_grad()
+
+            output_t, feat_t = model(input_var_t)
+            dis_score_t = discriminator(feat_t)
+
+            batch,_,h,w = dis_score_t.size()
+            target_dom_fake_t = make_variable(torch.ones(batch,h,w).long(), 
+                    requires_grad=False)
+
+            loss_gan_t = supervised_loss(dis_score_t, target_dom_fake_t)
+            (0.01 * loss_gan_t).backward()
+
+            optimizer.step()
+
+        print('Updating G using source supervised loss.')
+        optimizer.zero_grad()
+        opt_dis.zero_grad()
+
+        output_s, feat_s = model(input_var_s)
+        score_map = output_s[-1].data.cpu()
+
+        loss = criterion(output_s[0], target_var_s)
+        for j in range(1, len(output_s)):
+            loss += criterion(output_s[j], target_var_s)
+
+        acc = accuracy(score_map, target_s, idx, 0.2)     
+        losses.update(loss.item(), input_s.size(0))
+        acces.update(acc[0], input_s.size(0))
+
         loss.backward()
         optimizer.step()
 
@@ -256,7 +378,7 @@ def train(train_loader, model, criterion, optimizer, idx, flip=True):
     return losses.avg, acces.avg
 
 
-def validate(val_loader, model, criterion, num_classes, idx, save_result_dir, meta_dir, anno_type, flip=True, evaluate = False,
+def validate(val_loader, model, criterion, num_classes, idx, sample_img_dir, meta_dir, anno_type, flip=True, evaluate = False,
         scales = [0.7, 0.8, 0.9, 1, 1.2, 1.4, 1.6], multi_scale = False, save_heatmap = False):
     
     anno_type = anno_type[0].lower()
@@ -293,14 +415,14 @@ def validate(val_loader, model, criterion, num_classes, idx, save_result_dir, me
 
         with torch.no_grad():
             # compute output
-            output = model(input_var)
+            output, _ = model(input_var)
 
             score_map = output[-1].data.cpu()
             if flip:
                 flip_input_var = torch.autograd.Variable(
                         torch.from_numpy(fliplr(inputs.clone().numpy())).float().cuda(), 
                     )
-                flip_output_var = model(flip_input_var)
+                flip_output_var, _ = model(flip_input_var)
                 flip_output = flip_back(flip_output_var[-1].data.cpu(), meta_dir = meta_dir[0])
                 score_map += flip_output
                 score_map /= 2
@@ -310,7 +432,7 @@ def validate(val_loader, model, criterion, num_classes, idx, save_result_dir, me
                 loss = 0
                 for o in output:
                     loss += criterion(o, target_var)
-                acc = accuracy(score_map, target.cpu(), idx, pck_threshold)
+                acc = accuracy(score_map, target.cpu(), idx, 0.2)  
 
         if multi_scale:
             new_scales = []
@@ -357,21 +479,21 @@ def validate(val_loader, model, criterion, num_classes, idx, save_result_dir, me
 
         for n in range(score_map.size(0)):
             if evaluate:
-                with open(os.path.join(save_result_dir,'preds',img_name[n]+'.json'),'w') as f:
+                with open(os.path.join(sample_img_dir,'preds',img_name[n]+'.json'),'w') as f:
                     obj = {'d2_key':preds[n].numpy().tolist(), 'score':confidence[n]}
                     json.dump(obj, f)
 
-        if evaluate:
+        if evaluate: 
             for n in range(score_map.size(0)):
                 inp = inputs[n]
                 pred = score_map[n]
                 for t, m in zip(inp, mean):
                     t.add_(m)
-                scipy.misc.imsave(os.path.join(save_result_dir,'visualization', '{}.jpg'.format(img_name[n])), sample_with_heatmap(inp, pred))
+                scipy.misc.imsave(os.path.join(sample_img_dir,'visualization', '{}.jpg'.format(img_name[n])), sample_with_heatmap(inp, pred))
 
                 if save_heatmap:
                     score_map_original_size = align_back(score_map[n], meta['center'][n], meta['scale'][len(scales)*n - 1], meta['original_size'][n])
-                    np.save(os.path.join(save_result_dir, 'heatmaps', '{}.npy'.format(img_name[n])), score_map_original_size)
+                    np.save(os.path.join(sample_img_dir, 'heatmaps', '{}.npy'.format(img_name[n])), score_map_original_size)
 
         if anno_type != 'none':
 
@@ -476,7 +598,7 @@ if __name__ == '__main__':
                         help='path to save checkpoint (default: checkpoint)')
     parser.add_argument('--data-dir', type=str, nargs='+' ,metavar='PATH', help='path where data is saved')
     parser.add_argument('--meta-dir', type=str, nargs='+' ,metavar='PATH', help='path where meta data is saved', default = './data/meta/17_vertex')
-    parser.add_argument('--save-result-dir', type=str, metavar='PATH', help='path for saving sample images for visualization')
+    parser.add_argument('--sample-img-dir', type=str, metavar='PATH', help='path for saving sample images for visualization')
     parser.add_argument('--random-bg-dir', default = '', type=str, metavar='PATH', help='path from which random background for finetuneing is sampled')
     parser.add_argument('--resume', default='', type=str, metavar='PATH',
                         help='path to latest checkpoint (default: none)')

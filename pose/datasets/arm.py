@@ -80,8 +80,11 @@ class Arm(data.Dataset):
         if self.anno_type == 'none':
             L, F = read_jpg(img_folder)
             ids = range(1, len(L)+1)
-            self.train = []
-            self.valid = ids
+            split = round(len(ids)*training_set_percentage)
+            self.train = ids[:split]
+            self.valid = ids[split:] 
+            # self.train = []
+            # self.valid = ids
             self.dataset = L
             self.F = F
             self.anno = None
@@ -243,8 +246,13 @@ class Arm(data.Dataset):
             return inp, target, meta
 
         if self.anno_type == 'none':
-            img_path = self.dataset[index]         
-            img = load_image(img_path)  # CxHxW
+            img_path = self.dataset[index]   
+
+            
+            if not self.replace_bg:
+                img = load_image(img_path)  # CxHxW
+            else:
+                img = im_to_torch(cv2.cvtColor(self.background_replace.replace(cv2.imread(img_path), 'white'), cv2.COLOR_BGR2RGB))      
 
             original_size = np.array((img.shape[2], img.shape[1]))
 
@@ -276,6 +284,7 @@ class Arm(data.Dataset):
 
     def __len__(self):
         if self.is_train:
+            print(len(self.train))
             return len(self.train)
         else:
             if self.multi_scale:

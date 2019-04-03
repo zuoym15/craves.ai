@@ -4,3 +4,5 @@ visualization
 miscs/raw_data
 miscs/real_arm_experiment
 miscs/paper_related
+debug.py
+cyclegan_adda_related_scripts

@@ -1,9 +1,0 @@
-matplotlib
-numpy
-scipy
-unrealcv
-imageio
-scikit-video
-scikit-image
-sphinx
-pycocotools

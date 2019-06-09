@@ -1,1 +1,0 @@
-# This script demonstrate how to extend unrealcv with bp functions

@@ -1,5 +1,8 @@
 import glob, os, json
+import logging
 import numpy as np
+
+logger = logging.Logger("vdb")
 
 class Dataset:
     def __init__(self, db_root_dir):
@@ -11,6 +14,9 @@ class Dataset:
         filenames = glob.glob(os.path.join(self.db_root_dir, '*', 'lit', '*.png'))
         filenames = filenames + glob.glob(os.path.join(self.db_root_dir, '*', 'lit', '*.jpg'))
         ids = [int(os.path.splitext(os.path.basename(f))[0]) for f in filenames]
+        if len(ids) == 0:
+            logger.warning("The dataset is empty, root_dir: %s" % self.db_root_dir)
+            print("The dataset is empty")
         return ids
     
     def get_cams(self):
@@ -73,7 +79,6 @@ class Dataset:
         return cam_info
 
     def get_image(self, cams, ids):
-
         extension = ['.png', '.jpg']
         folder = 'lit'
         # folder = 'lit' if img_type == 'synthetic' else 'real' #real image is saved in '../real' folder

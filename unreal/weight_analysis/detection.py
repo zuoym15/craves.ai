@@ -1,1 +1,0 @@
-# Test a detection model.

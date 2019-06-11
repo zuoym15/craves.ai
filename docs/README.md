@@ -9,7 +9,7 @@ In this paper, we present an alternative solution, which uses a 3D model to crea
 
 
 
-| <img src="image4.jpg" height="300px"/> | <img src="image15_crop.jpg" height="300px"/> |
+| <img src="image4.jpg" height="250px"/> | <img src="image15_crop.jpg" height="250px"/> |
 |---|---|
 |    |    |
 
@@ -35,8 +35,7 @@ Video demo
 
 # Code
 
-**Code, model, dataset and simulator are coming soon.**
-
+Please see [the github repo](https://github.com/zuoym15/craves.ai) for code and data of this project.
 
 ```bibtex
 @article{zuo2019craves,

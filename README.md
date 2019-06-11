@@ -49,6 +49,7 @@ If you want to train with the `ft_20181105` dataset, please also download some i
 4. `cd ./scripts` then run `sh val_arm_reall.sh` and you can see the accuracy on the real lab dataset.
 
 Other shell scripts you may want to try:
+
 `train_arm.sh`: train a model from scratch with synthetic dataset
 `train_arm_concat.sh`: train a model from scratch with synthetic dataset and real lab images for fine-tuning
 `val_arm_reall_with_3D.sh`: evaluate model on lab dataset with 3D accuracy

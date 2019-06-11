@@ -1,6 +1,6 @@
 ## CRAVES: Controlling Robotic Arm with a Vision-based, Economic System
 
-## Dataset download
+## Dataset Download
 
 Download the datasets from [here](http://www.cs.jhu.edu/~qiuwch/craves/dataset/).
 
@@ -11,7 +11,7 @@ Put the zipped file into folder ./data and unzip it. For example, you can put th
 - test_20181024.zip, lab test images with 3D ground truth 
 - youtube_20181105.zip, youtube test images with 2D ground truth
 
-## Get started with pose estimation
+## Pose Estimation
 
 1. Download the checkpoint for the pretrained model [here](http://www.cs.jhu.edu/~qiuwch/craves/) and put it into a folder, e.g. ./checkpoint/checkpoint.pth.tar. 
 2. Create a folder for result saving, e.g. `./saved_results`.
@@ -23,7 +23,17 @@ Put the zipped file into folder ./data and unzip it. For example, you can put th
 
 4. Run `test_arm_reall.sh` and you can see the accuracy on the real lab dataset.
 
-## Dependencies
+Dependencies: pytorch with version 0.4.1 or higher, OpenCV
 
-1. pytorch with version 0.4.1 or higher
-2. OpenCV
+## Data Generation from Simulator
+
+Download the binary from [here](https://cs.jhu.edu/~qiuwch/craves/sim/arm-0610.zip)
+
+Unzip and run `./LinuxNoEditor/ArmUE4.sh`.
+
+Run the following script to generate images and ground truth
+
+```bash
+pip install unrealcv imageio
+python demo_capture.py frame.png
+```

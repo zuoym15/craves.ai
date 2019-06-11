@@ -2,9 +2,7 @@ data/*
 !data/meta/
 checkpoint
 visualization
-miscs/raw_data
-miscs/real_arm_experiment
-miscs/paper_related
+miscs
 debug.py
 cyclegan_adda_related_scripts
 

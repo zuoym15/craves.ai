@@ -36,7 +36,7 @@ class Concat(data.Dataset):
             self.choice_list = []
             for i in range(len(self.datasets)):
                 self.choice_list.append(list(range(self.lengths[i])))
-                print('length of dataset {} : {}'.format(i+1, self.lengths[i]))
+                print('No. images of dataset {} : {}'.format(i+1, self.lengths[i]))
 
         else:
             assert(len(self.datasets) == len(self.ratio))
@@ -45,12 +45,12 @@ class Concat(data.Dataset):
             self.choice_list = []
             for i in range(len(self.datasets)):
                 self.choice_list.append(np.random.choice(self.lengths[i], self.valid_lengths[i], replace=False))
-                print('length of dataset {} : {}'.format(i+1, self.valid_lengths[i]))
+                print('No. images of dataset {} : {}'.format(i+1, self.valid_lengths[i]))
 
             self.offsets = np.cumsum(self.valid_lengths)
             self.length = np.sum(self.valid_lengths)
 
-        print('merging {} datasets, total length: {}'.format(len(self.datasets), self.length))
+        print('merging {} datasets, total No. images: {}'.format(len(self.datasets), self.length))
 
 class Concat_w_class(data.Dataset): #concatenated dataset with class label, only support concating 2 datasets(sourse and target)
 
@@ -75,11 +75,11 @@ class Concat_w_class(data.Dataset): #concatenated dataset with class label, only
         self.choice_list = []
         for i in range(len(self.datasets)):
             self.choice_list.append(np.random.choice(self.lengths[i], self.valid_length, replace=False))
-            print('length of dataset {} : {}'.format(i+1, self.valid_length))
+            print('No. images of dataset {} : {}'.format(i+1, self.valid_length))
 
         self.length = self.valid_length
 
-        print('merging {} datasets, total length: {}'.format(len(self.datasets), self.length))
+        print('merging {} datasets, total No. images: {}'.format(len(self.datasets), self.length))
 
             
             

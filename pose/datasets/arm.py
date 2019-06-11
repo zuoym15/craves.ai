@@ -284,7 +284,6 @@ class Arm(data.Dataset):
 
     def __len__(self):
         if self.is_train:
-            print(len(self.train))
             return len(self.train)
         else:
             if self.multi_scale:

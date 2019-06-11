@@ -116,12 +116,13 @@ def main(args):
         train=False, training_set_percentage = args.training_set_percentage[i], scales = scales, multi_scale=args.multi_scale, ignore_invis_pts=args.ignore_invis_pts))
 
     # Data loading code
-    train_loader = torch.utils.data.DataLoader(
-        datasets.Concat(datasets = train_set_list, ratio = args.ratio),
-        batch_size=args.train_batch, shuffle=True,
-        num_workers=args.workers, pin_memory=True)
+    if not args.evaluate:
+        train_loader = torch.utils.data.DataLoader(
+            datasets.Concat(datasets = train_set_list, ratio = args.ratio),
+            batch_size=args.train_batch, shuffle=True,
+            num_workers=args.workers, pin_memory=True)
 
-    print("size of training set:{}".format(len(train_loader)))
+        print("No. minibatches in training set:{}".format(len(train_loader)))
 
     if args.multi_scale: #multi scale testing
         args.test_batch = args.test_batch*len(scales)
@@ -131,7 +132,7 @@ def main(args):
         batch_size=args.test_batch, shuffle=False,
         num_workers=args.workers, pin_memory=True)
 
-    print("size of validation set:{}".format(len(val_loader)))
+    print("No. minibatches in validation set:{}".format(len(val_loader)))
 
     if args.evaluate:
         print('\nEvaluation only') 
@@ -426,7 +427,7 @@ if __name__ == '__main__':
     parser.add_argument('-b', '--blocks', default=1, type=int, metavar='N',
                         help='Number of residual modules at each location in the hourglass')
     parser.add_argument('--num-classes', default=17, type=int, metavar='N',
-                        help='Number of keypoints')
+                        help='Number of keypoints, aka number of output channels')
     # Training strategy
     parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
                         help='number of data loading workers (default: 4)')
@@ -460,14 +461,10 @@ if __name__ == '__main__':
     parser.add_argument('--label-type', metavar='LABELTYPE', default='Gaussian',
                         choices=['Gaussian', 'Cauchy'],
                         help='Labelmap dist type: (default=Gaussian)')
-    parser.add_argument('--use-bbox', action='store_true',
-                        help='use bbox or center-scale mode')
-    parser.add_argument('--whole-img', action='store_true',
-                        help='does not provide bounding box. Feed whole image into network')
     parser.add_argument('--multi-scale', action='store_true',
                         help='do multi-scale testing')
     parser.add_argument('--replace-bg', action='store_true',
-                        help='background repalcement when doing finetune')
+                        help='background repalcement when doing finetuning with real images')
     parser.add_argument('--ignore-invis-pts', action='store_true',
                         help='ignore the invisible points when testing on youtube videos')
                                  
@@ -476,19 +473,19 @@ if __name__ == '__main__':
                         help='path to save checkpoint (default: checkpoint)')
     parser.add_argument('--data-dir', type=str, nargs='+' ,metavar='PATH', help='path where data is saved')
     parser.add_argument('--meta-dir', type=str, nargs='+' ,metavar='PATH', help='path where meta data is saved', default = './data/meta/17_vertex')
-    parser.add_argument('--save-result-dir', type=str, metavar='PATH', help='path for saving sample images for visualization')
+    parser.add_argument('--save-result-dir', type=str, metavar='PATH', help='path for saving visualization images and results')
     parser.add_argument('--random-bg-dir', default = '', type=str, metavar='PATH', help='path from which random background for finetuneing is sampled')
     parser.add_argument('--resume', default='', type=str, metavar='PATH',
                         help='path to latest checkpoint (default: none)')
     parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true',
-                        help='evaluate model on validation set')
-    parser.add_argument('--anno-type', type=str, nargs='+', help='annotation type of each sub-dataset; should be eith 3D, 2D or None')
+                        help='evaluate model only')
+    parser.add_argument('--anno-type', type=str, nargs='+', help='annotation type of each sub-dataset; should be either 3D, 2D or None')
     parser.add_argument('--ratio', type=float, nargs='+', default = [1], 
-                        help='Ratio for dataset concatination')
+                        help='Ratio for each dataset when multiple are concatinated')
     parser.add_argument('--compute-3d', action='store_true',
                         help='compute 3d angles during validation')
     parser.add_argument('--camera-type', type = str, default = 'video',
-                        help='compute 3d angles during validation')
+                        help='camera intrinsic parameters. Select as video when testing on lab datasets')
     parser.add_argument('--save-heatmap', action='store_true',
                         help='save heatmap as .npy file')
 

@@ -41,14 +41,22 @@ python demo_capture.py frame.png
 
 ## Control System
 
-The control module of CRAVES is hosted in a seperate repo, https://github.com/zfw1226/craves_control.
+The control module of CRAVES is hosted in another repo, https://github.com/zfw1226/craves_control.
 
 Please see this repo for hardware drivers, pose estimator, a PID-like controller, and a RL-based controller.
+
+## Citation
+If you found CRAVES useful, please consider citing:
+```bibtex
+@article{zuo2019craves,
+  title={CRAVES: Controlling Robotic Arm with a Vision-based, Economic System},
+  author={Zuo, Yiming and Qiu, Weichao and Xie, Lingxi and Zhong, Fangwei and Wang, Yizhou and Yuille, Alan L},
+  journal={CVPR},
+  year={2019}
+}
+```
+
 
 ## Contact
 
 If you have any question or suggestions, please open an issue in this repo. Thanks.
-
-
-
-

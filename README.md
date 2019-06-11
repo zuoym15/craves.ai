@@ -37,7 +37,7 @@ for instance, the synthetic images folder should look like this:
 └───vertex                  // ground-truth motor angles   
 ```
 
-if you want to train with the `ft_20181105` dataset, please also download some images (e.g. COCO dataset )
+If you want to train with the `ft_20181105` dataset, please also download some image you like (e.g. [COCO dataset](http://images.cocodataset.org/zips/val2017.zip)) and put them into the `background_img` folder.
 
 ## Pose Estimation
 
@@ -47,6 +47,14 @@ if you want to train with the `ft_20181105` dataset, please also download some i
 `--data-dir ../data/test_20181024 --resume ../checkpoint/checkpoint.pth.tar --save-result-dir ../saved_results`
 
 4. `cd ./scripts` then run `sh val_arm_reall.sh` and you can see the accuracy on the real lab dataset.
+
+Other shell scripts you may want to try:
+`train_arm.sh`: train a model from scratch with synthetic dataset
+`train_arm_concat.sh`: train a model from scratch with synthetic dataset and real lab images for fine-tuning
+`val_arm_reall_with_3D.sh`: evaluate model on lab dataset with 3D accuracy
+`val_arm_syn.sh`: evaluate model on synthetic dataset
+`val_arm_youtube.sh`: evaluate model on youtube dataset (all keypoints)
+`val_arm_youtube_vis_only.sh`: evaluate model on youtube dataset (visible keypoints only)
 
 Dependencies: pytorch with version 0.4.1 or higher, OpenCV
 

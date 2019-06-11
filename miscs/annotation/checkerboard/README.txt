@@ -1,1 +1,0 @@
-We use a 8*8 checkerboard to get the camera extrinsic parameters.

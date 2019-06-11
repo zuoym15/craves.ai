@@ -1,1 +1,0 @@
-we tried to annotate the images' 3D pose by using our model. Doesn't work, however :( 

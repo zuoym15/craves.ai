@@ -1,4 +1,4 @@
-# CRAVES: Controlling Robotic Arm with a Vision-based, Economic System
+## CRAVES: Controlling Robotic Arm with a Vision-based, Economic System
 
 ## Dataset download
 

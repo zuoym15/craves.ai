@@ -1,25 +1,27 @@
-# arm_pose_research_script
+# CRAVES: Controlling Robotic Arm with a Vision-based, Economic System
 
 ## Dataset download
 
-download the datasets from this [Dropbox link](https://www.dropbox.com/sh/etvx8edkweco97u/AABQkjEIGJOwXy09AdAQDqWRa?dl=0)
-put the zipped file into folder ./data and unzip it. For example, you can put the test dataset into folder ./data/test_20181024.zip and unzip it. 
+Download the datasets from [here](http://www.cs.jhu.edu/~qiuwch/craves/dataset/).
+
+Put the zipped file into folder ./data and unzip it. For example, you can put the test dataset into folder `./data/test_20181024.zip` and unzip it.
 
 - 20181107.zip, synthetic training images and ground truth
 - ft_20181105.zip, unlabeled real lab images for fine-tuning
 - test_20181024.zip, lab test images with 3D ground truth 
 - youtube_20181105.zip, youtube test images with 2D ground truth
 
-## Get started
+## Get started with pose estimation
 
-1. Download the checkpoint for the pretrained model [here](https://www.dropbox.com/s/asi82l7hjdvo1ne/checkpoint.pth.tar?dl=0) and put it into a folder, e.g. ./checkpoint/checkpoint.pth.tar. 
-2. Create a folder for result saving, e.g. ./saved_results.
-3. Open val_arm_reall.sh. Replace --data-dir, --resume and --save-result-dir with the folder where you put the datasets, the pre-train model and the saved result, respectively. For example,
+1. Download the checkpoint for the pretrained model [here](http://www.cs.jhu.edu/~qiuwch/craves/) and put it into a folder, e.g. ./checkpoint/checkpoint.pth.tar. 
+2. Create a folder for result saving, e.g. `./saved_results`.
+3. Open `val_arm_reall.sh`. Replace `--data-dir`, `--resume` and `--save-result-dir` with the folder where you put the datasets, the pre-train model and the saved result, respectively. For example,
+
 ```bash
 --data-dir ./data/test_20181024 --resume ./checkpoint/checkpoint.pth.tar --save-result-dir ./saved_results
 ```
 
-4. Run test_arm_reall.sh and you can see the accuracy on the real lab dataset.
+4. Run `test_arm_reall.sh` and you can see the accuracy on the real lab dataset.
 
 ## Dependencies
 

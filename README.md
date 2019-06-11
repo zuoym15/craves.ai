@@ -11,18 +11,42 @@ Download the datasets from [here](http://www.cs.jhu.edu/~qiuwch/craves/dataset/)
 Put the zipped file into folder ./data and unzip it. For example, you can put the test dataset into folder `./data/test_20181024.zip` and unzip it.
 
 - 20181107.zip, synthetic training images and ground truth
-- ft_20181105.zip, unlabeled real lab images for fine-tuning
+- ft_20181105.zip, real lab images for fine-tuning with semi-supervised fake labels
 - test_20181024.zip, lab test images with 3D ground truth 
 - youtube_20181105.zip, youtube test images with 2D ground truth
+
+for instance, the synthetic images folder should look like this:
+
+```
+./data/20181107
+│   readme.txt 
+│
+└───angles                  //ground-truth motor angles   
+│   
+└───FusionCameraActor3_2
+│   └───caminfo             // ground-truth camera parameters 
+│   └───lit                 // RGB images
+│   └───seg                 // parsing 
+│
+└───joint                   // joint position in 3D space   
+│
+└───puppeteer               
+│
+└───scene                   // scene information    
+│
+└───vertex                  // ground-truth motor angles   
+```
+
+if you want to train with the `ft_20181105` dataset, please also download some images (e.g. COCO dataset )
 
 ## Pose Estimation
 
 1. Download the checkpoint for the pretrained model [here](http://www.cs.jhu.edu/~qiuwch/craves/) and put it into a folder, e.g. ./checkpoint/checkpoint.pth.tar. 
 2. Create a folder for result saving, e.g. `./saved_results`.
-3. Open `val_arm_reall.sh`. Replace `--data-dir`, `--resume` and `--save-result-dir` with the folder where you put the datasets, the pre-train model and the saved result, respectively. For example,
-`--data-dir ./data/test_20181024 --resume ./checkpoint/checkpoint.pth.tar --save-result-dir ./saved_results`
+3. Open `./scripts/val_arm_reall.sh`. Make sure `--data-dir`, `--resume` and `--save-result-dir` match with the folder where you put the datasets, the pre-train model and the saved result, respectively. For example,
+`--data-dir ../data/test_20181024 --resume ../checkpoint/checkpoint.pth.tar --save-result-dir ../saved_results`
 
-4. Run `test_arm_reall.sh` and you can see the accuracy on the real lab dataset.
+4. `cd ./scripts` then run `sh val_arm_reall.sh` and you can see the accuracy on the real lab dataset.
 
 Dependencies: pytorch with version 0.4.1 or higher, OpenCV
 

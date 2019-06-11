@@ -5,6 +5,7 @@ visualization
 miscs
 debug.py
 cyclegan_adda_related_scripts
+saved_results
 
 *.pyc
 *~

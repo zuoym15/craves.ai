@@ -51,6 +51,17 @@ def main(args):
     if args.meta_dir == '':
         args.meta_dir = args.data_dir #if not specified, assume meta info is stored in data dir.
 
+    # create checkpoint dir
+    if not isdir(args.checkpoint):
+        mkdir_p(args.checkpoint)
+
+    #create the log file not exist
+    file = open(join(args.checkpoint, 'log.txt'), 'w+')
+    file.close()
+
+    if not isdir(args.save_result_dir):
+        mkdir_p(args.save_result_dir)
+
     if args.evaluate: #creatng path for evaluation
         folders_to_create = ['preds', 'visualization']
         if args.save_heatmap:
@@ -64,10 +75,6 @@ def main(args):
     global best_acc
 
     cams = ['FusionCameraActor3_2']
-
-    # create checkpoint dir
-    if not isdir(args.checkpoint):
-        mkdir_p(args.checkpoint)
 
     # create model
     print("==> creating model '{}', stacks={}, blocks={}".format(args.arch, args.stacks, args.blocks))
@@ -272,7 +279,7 @@ def validate(val_loader, model, criterion, num_classes, idx, save_result_dir, me
     # switch to evaluate mode
     model.eval()
 
-    meanstd_file = './datasets/arm/mean.pth.tar'
+    meanstd_file = '../datasets/arm/mean.pth.tar'
     meanstd = torch.load(meanstd_file)
     mean = meanstd['mean']
 
@@ -472,7 +479,7 @@ if __name__ == '__main__':
     parser.add_argument('-c', '--checkpoint', default='checkpoint', type=str, metavar='PATH',
                         help='path to save checkpoint (default: checkpoint)')
     parser.add_argument('--data-dir', type=str, nargs='+' ,metavar='PATH', help='path where data is saved')
-    parser.add_argument('--meta-dir', type=str, nargs='+' ,metavar='PATH', help='path where meta data is saved', default = './data/meta/17_vertex')
+    parser.add_argument('--meta-dir', type=str, nargs='+' ,metavar='PATH', help='path where meta data is saved', default = '../data/meta/17_vertex')
     parser.add_argument('--save-result-dir', type=str, metavar='PATH', help='path for saving visualization images and results')
     parser.add_argument('--random-bg-dir', default = '', type=str, metavar='PATH', help='path from which random background for finetuneing is sampled')
     parser.add_argument('--resume', default='', type=str, metavar='PATH',

@@ -102,7 +102,7 @@ class Arm(data.Dataset):
         self.mean, self.std = self._compute_mean()
 
     def _compute_mean(self):
-        meanstd_file = './datasets/arm/mean.pth.tar'
+        meanstd_file = '../datasets/arm/mean.pth.tar'
         if isfile(meanstd_file):
             meanstd = torch.load(meanstd_file)
         else:
@@ -124,10 +124,10 @@ class Arm(data.Dataset):
                 }
             torch.save(meanstd, meanstd_file)
 
-        if self.is_train:
+        # if self.is_train:
         
-            print('    Mean: %.4f, %.4f, %.4f' % (meanstd['mean'][0], meanstd['mean'][1], meanstd['mean'][2]))
-            print('    Std:  %.4f, %.4f, %.4f' % (meanstd['std'][0], meanstd['std'][1], meanstd['std'][2]))
+        #     print('    Mean: %.4f, %.4f, %.4f' % (meanstd['mean'][0], meanstd['mean'][1], meanstd['mean'][2]))
+        #     print('    Std:  %.4f, %.4f, %.4f' % (meanstd['std'][0], meanstd['std'][1], meanstd['std'][2]))
             
         return meanstd['mean'], meanstd['std']
 

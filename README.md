@@ -28,7 +28,7 @@ Dependencies: pytorch with version 0.4.1 or higher, OpenCV
 
 ## Data Generation from Simulator
 
-Download the binary from [here](https://cs.jhu.edu/~qiuwch/craves/sim/arm-0610.zip)
+Download the linux binary from [here](https://cs.jhu.edu/~qiuwch/craves/sim/arm-0610.zip) (tested in Ubuntu 16.04).
 
 Unzip and run `./LinuxNoEditor/ArmUE4.sh`.
 

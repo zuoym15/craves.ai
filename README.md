@@ -1,5 +1,9 @@
 ## CRAVES: Controlling Robotic Arm with a Vision-based, Economic System
 
+craves.ai controls a toy robotic arm (OWI-535) with a single RGB camera. Please see the system pipeline and how it works in [docs/README.md](docs/README.md) first before trying the code. The following animation shows the arm controlling by a mounted camera to reach a goal without relying on any other sensors.
+
+![reach-demo](docs/reach2.gif)
+
 ## Dataset Download
 
 Download the datasets from [here](http://www.cs.jhu.edu/~qiuwch/craves/dataset/).

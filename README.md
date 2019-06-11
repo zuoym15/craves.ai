@@ -37,3 +37,17 @@ Run the following script to generate images and ground truth
 pip install unrealcv imageio
 python demo_capture.py frame.png
 ```
+
+## Control System
+
+The control module of CRAVES is hosted in a seperate repo, https://github.com/zfw1226/craves_control.
+
+Please see this repo for hardware drivers, pose estimator, a PID-like controller, and a RL-based controller.
+
+## Contact
+
+If you have any question or suggestions, please open an issue in this repo. Thanks.
+
+
+
+

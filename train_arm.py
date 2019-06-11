@@ -59,10 +59,10 @@ def main(args):
     file = open(join(args.checkpoint, 'log.txt'), 'w+')
     file.close()
 
-    if not isdir(args.save_result_dir):
-        mkdir_p(args.save_result_dir)
-
     if args.evaluate: #creatng path for evaluation
+        if not isdir(args.save_result_dir):
+            mkdir_p(args.save_result_dir)
+
         folders_to_create = ['preds', 'visualization']
         if args.save_heatmap:
             folders_to_create.append('heatmaps')

@@ -25,6 +25,7 @@ Other shell scripts you may want to try:
 
 - `train_arm.sh` and `train_arm_concat.sh`: train a model from scratch with synthetic dataset only and with multiple datasets, respectively.
 - `val_arm_syn.sh`: evaluate model on synthetic dataset
+- `val_arm_reall_with_3D`: evaluate model on synthetic dataset, giving both 2D and 3D output.
 - `val_arm_youtube.sh` and `val_arm_youtube_vis_only.sh`: evaluate model on youtube dataset, with all keypoints and only visible keypoints, respectively.
 
 Dependencies: pytorch with version 0.4.1 or higher, OpenCV

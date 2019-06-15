@@ -6,38 +6,11 @@ The craves.ai project controls a toy robotic arm (OWI-535) with a single RGB cam
 
 ## Dataset Download
 
+We created three datasets for this project, namely `synthetic`, `lab` and `youtube`. 
+
 Download the datasets from [here](http://www.cs.jhu.edu/~qiuwch/craves/dataset/).
 
-Put the zipped file into folder ./data and unzip it. For example, you can put the test dataset into folder `./data/test_20181024.zip` and unzip it.
-
-- 20181107.zip, synthetic training images and ground truth
-- ft_20181105.zip, real lab images for fine-tuning with semi-supervised fake labels
-- test_20181024.zip, lab test images with 3D ground truth 
-- youtube_20181105.zip, youtube test images with 2D ground truth
-
-for instance, the synthetic images folder should look like this:
-
-```
-./data/20181107
-│   readme.txt 
-│
-└───angles                  //ground-truth motor angles   
-│   
-└───FusionCameraActor3_2
-│   └───caminfo             // ground-truth camera parameters 
-│   └───lit                 // RGB images
-│   └───seg                 // parsing 
-│
-└───joint                   // joint position in 3D space   
-│
-└───puppeteer               
-│
-└───scene                   // scene information    
-│
-└───vertex                  // ground-truth motor angles   
-```
-
-If you want to train with the `ft_20181105` dataset, please also download some image you like (e.g. [COCO dataset](http://images.cocodataset.org/zips/val2017.zip)) and put them into the `background_img` folder.
+For the usage of these datasets, please refer to [here](docs/dataset_info.md)
 
 ## Pose Estimation
 
@@ -50,12 +23,10 @@ If you want to train with the `ft_20181105` dataset, please also download some i
 
 Other shell scripts you may want to try:
 
-- `train_arm.sh`: train a model from scratch with synthetic dataset
-- `train_arm_concat.sh`: train a model from scratch with synthetic dataset and real lab images for fine-tuning
-- `val_arm_reall_with_3D.sh`: evaluate model on lab dataset with 3D accuracy
+- `train_arm.sh` and `train_arm_concat.sh`: train a model from scratch with synthetic dataset only and with multiple datasets, respectively.
 - `val_arm_syn.sh`: evaluate model on synthetic dataset
-- `val_arm_youtube.sh`: evaluate model on youtube dataset (all keypoints)
-- `val_arm_youtube_vis_only.sh`: evaluate model on youtube dataset (visible keypoints only)
+- `val_arm_reall_with_3D`: evaluate model on synthetic dataset, giving both 2D and 3D output.
+- `val_arm_youtube.sh` and `val_arm_youtube_vis_only.sh`: evaluate model on youtube dataset, with all keypoints and only visible keypoints, respectively.
 
 Dependencies: pytorch with version 0.4.1 or higher, OpenCV
 

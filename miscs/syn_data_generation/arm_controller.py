@@ -112,15 +112,8 @@ def data_sampler_dense_pose():
                 counter += 1
                 time.sleep(0.5)
 
-def visualizer(preds):
+def set_camrea(preds):
     rotation, base, elbow, wrist, pitch, yaw, roll ,x, y, z, = preds
-    #################################################
-    #for visualization
-    #################################################
-    #rotation = rotation + 90
-    #base = base - 90
-    #elbow = elbow - base
-    #wrist = wrist - elbow
     gripper = 0
     res = client.request('vset /arm {rotation} {base} {elbow} {wrist} {gripper}'.format(**locals()))
     #print(res)
@@ -136,6 +129,31 @@ def visualizer(preds):
 
     print('{rotation} {base} {elbow} {wrist} {gripper} {x} {y} {z} {pitch} {yaw} {roll}'.format(**locals()))
 
+def visualizer(preds):
+    # rotation, base, elbow, wrist, pitch, yaw, roll ,x, y, z, = preds
+    #################################################
+    #for visualization
+    #################################################
+    # #rotation = rotation + 90
+    # #base = base - 90
+    # #elbow = elbow - base
+    # #wrist = wrist - elbow
+    # gripper = 0
+    # res = client.request('vset /arm {rotation} {base} {elbow} {wrist} {gripper}'.format(**locals()))
+    # #print(res)
+
+    # res = client.request('vset /camera/1/location {x} {y} {z}'.format(**locals()))
+    # #print(res)
+
+    # pitch = -pitch
+    # yaw = yaw-180
+    # roll = -roll
+    # res = client.request('vset /camera/1/rotation {pitch} {yaw} {roll}'.format(**locals()))
+    # #print(res)
+
+    # print('{rotation} {base} {elbow} {wrist} {gripper} {x} {y} {z} {pitch} {yaw} {roll}'.format(**locals()))
+    set_camrea(preds)
+
     client.request('vset /data_capture/capture_frame')
 
     '''
@@ -147,6 +165,14 @@ def visualizer(preds):
     print('image saved')
     return im
     '''
+
+def get_img_from_preds(preds, save_img_dir = './vis.png'):
+    set_camrea(preds)
+    i = 1
+    data = client.request('vget /camera/{i}/lit png'.format(**locals()))
+    im = read_png(data)
+    io.imsave(save_img_dir, im)
+    return im
 
 
 def main(data_dir, meta_dir, img_type = 'video'):
@@ -179,6 +205,21 @@ def main(data_dir, meta_dir, img_type = 'video'):
         cv2.imwrite(os.path.join(data_dir, 'syn', os.path.splitext(file_name)[0] + '.jpg'), img)
 
         time.sleep(0.2)
+
+def visualize_from_d3_preds_single_frame(d3_pred, raw_img_dir): #d3 pred in format " rotation, base, elbow, wrist, pitch, yaw, roll ,x, y, z "
+    syn_img_dir = './vis.png'
+    raw_img = cv2.imread(raw_img_dir)
+    H, W, _ = raw_img.shape
+
+    get_img_from_preds(d3_pred, syn_img_dir)
+    syn_img = cv2.imread(syn_img_dir)
+    syn_h, syn_w, _ =  syn_img.shape
+    if syn_h < H or syn_w < W:
+        print('warning: input image too large, should be smaller than the sampler resolution')
+        return syn_img
+
+    syn_img = syn_img[0:H, 0:W] #cut the image too the same size as the raw image
+    return syn_img
 
 def training_data_from_d3_preds(d3_pred_dir, img_dir, training_data_dir):
     client.request('vset /camera/1/fov 66.5')

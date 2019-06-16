@@ -6,7 +6,7 @@ The craves.ai project controls a toy robotic arm (OWI-535) with a single RGB cam
 
 ![reach-demo](docs/reach2.gif)
 
-Here are some visualization result from the lab and the YouTube dataset:
+Here are some visualization result from the YouTube dataset:
 
 ![youtube_heatmap](docs/youtube_heatmap.png)
 

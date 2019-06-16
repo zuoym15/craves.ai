@@ -223,7 +223,7 @@ def train(train_loader, model, criterion, optimizer, idx, flip=True):
         data_time.update(time.time() - end)
 
         input_var = torch.autograd.Variable(inputs.cuda())
-        target_var = torch.autograd.Variable(target.cuda(async=True))
+        target_var = torch.autograd.Variable(target.cuda(non_blocking=True))
 
         # compute output
         output = model(input_var)
@@ -293,7 +293,7 @@ def validate(val_loader, model, criterion, num_classes, idx, save_result_dir, me
 
         if anno_type != 'none':
 
-            target = target.cuda(async=True)
+            target = target.cuda(non_blocking=True)
             target_var = torch.autograd.Variable(target)
 
         input_var = torch.autograd.Variable(inputs.cuda())
@@ -497,3 +497,4 @@ if __name__ == '__main__':
                         help='save heatmap as .npy file')
 
     main(parser.parse_args())
+    

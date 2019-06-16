@@ -6,6 +6,12 @@ The craves.ai project controls a toy robotic arm (OWI-535) with a single RGB cam
 
 ![reach-demo](docs/reach2.gif)
 
+Here are some visualization result from the lab and the YouTube dataset:
+
+![youtube_heatmap](docs/youtube_heatmap.png)
+
+
+
 ## Dataset Download
 
 We created three datasets for this project, namely `synthetic`, `lab` and `youtube`. 
@@ -23,11 +29,11 @@ For the usage of these datasets, please refer to [here](docs/dataset_info.md).
 
 4. `cd ./scripts` then run `sh val_arm_reall.sh` and you can see the accuracy on the real lab dataset.
 
-What you should expect to see:
+The output you should expect to see:
 
 ```
-λ sh val_arm_reall.sh
-==> creating model 'hg', stacks=2, blocks=1
+sh val_arm_reall.sh
+=> creating model 'hg', stacks=2, blocks=1
 => loading checkpoint '../checkpoint/checkpoint.pth.tar'
 => loaded checkpoint '../checkpoint/checkpoint.pth.tar' (epoch 30)
     Total params: 6.73M

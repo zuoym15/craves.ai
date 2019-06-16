@@ -1,5 +1,7 @@
 ## CRAVES: Controlling Robotic Arm with a Vision-based, Economic System
 
+This is the code for pose estimation module of CRAVES. If you want to test on the OWI-535 hardware, please refer the control module [here](https://github.com/zfw1226/craves_control)
+
 The craves.ai project controls a toy robotic arm (OWI-535) with a single RGB camera. Please see the system pipeline and how it works in [docs/README.md](docs/README.md) first before trying the code. The following animation shows the arm controlling by a mounted camera to reach a goal without relying on any other sensors.
 
 ![reach-demo](docs/reach2.gif)
@@ -29,6 +31,8 @@ Other shell scripts you may want to try:
 - `val_arm_youtube.sh` and `val_arm_youtube_vis_only.sh`: evaluate model on youtube dataset, with all keypoints and only visible keypoints, respectively.
 
 Dependencies: pytorch with version 0.4.1 or higher, OpenCV
+
+This repo is developed based on [pytorch-pose](https://github.com/bearpaw/pytorch-pose).
 
 ## Data Generation from Simulator
 

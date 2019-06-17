@@ -55,7 +55,7 @@ Other shell scripts you may want to try:
 
 Dependencies: pytorch with version 0.4.1 or higher, OpenCV
 
-This repo is developed based on [pytorch-pose](https://github.com/bearpaw/pytorch-pose).
+The 2D pose estimation module is developed based on [pytorch-pose](https://github.com/bearpaw/pytorch-pose).
 
 ## Data Generation from Simulator
 
@@ -91,3 +91,5 @@ If you found CRAVES useful, please consider citing:
 ## Contact
 
 If you have any question or suggestions, please open an issue in this repo. Thanks.
+
+Disclaimer: authors are a group of scientists working on computer vision research. They are not associated with the company manufactures this arm. If you have a better hardware to recommend, or want to apply this technique to your arm, please contact us.

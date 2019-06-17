@@ -10,12 +10,12 @@ The second part of real-world image data, the **YouTube dataset**, is crawled fr
 There is another dataset for finetuning the model. The image is captured under the same environment as the lab dataset but from different videos. The annotation of this dataset is done by human but by the model itself. 
 Please refer to our [paper](https://arxiv.org/abs/1812.00725) for technical details.
 
-##Browse
+## Browse
 Here are some sample images from the three datasets. From top to bottom: synthetic images (top two rows), lab images and YouTube images.
 
 ![samples](4_row.jpg)
 
-##Download
+## Download
 
 Click [here](http://www.cs.jhu.edu/~qiuwch/craves/dataset/) to download these datasets.
 
@@ -28,9 +28,9 @@ Put the zipped file into folder ./data and unzip it. For example, you can put th
 
 If you want to train with the `ft_20181105` dataset, please also download some image you like (e.g. [COCO dataset](http://images.cocodataset.org/zips/val2017.zip)) and put them into the `background_img` folder. These images are for random background replacement. For details, please refer to our paper.
 
-##Data Structure
+## Data Structure
 
-###The Virtual & Lab Dataset
+### The Virtual & Lab Dataset
 These two datasets provide 3D annotation. The positions of keypoints in 3D space are saved in json files. We provide python scripts to load the json file and project them into the 2D image coordinate system with respect to the camera parameters.
 
 The folder structure should look like this:
@@ -50,7 +50,7 @@ The folder structure should look like this:
 ......
 ```
 
-###The YouTube Dataset
+### The YouTube Dataset
 The YouTube dataset only provides 2D annotation, as we cannot annotate the accurate 3D pose of the arm without knowing camera parameters. The coordinates of the 2D keypoints are directly saved in json files. 
 
 The folder structure should look like this:
@@ -64,7 +64,7 @@ The folder structure should look like this:
 ......
 ```
 
-##Load the Data
+## Load the Data
 In our repo, we provide a [script](../pose/datasets/arm.py) that loads the raw data and generates groudtruth for training and validation (i.e. heatmaps). 
 
 For the YouTube dataset, it directly load 2D annotation and for the virtual and lab dataset, it first does the function call 
@@ -73,7 +73,7 @@ joint_2d, vertex_2d, img_path = get_joint_vertex_2d(self.dataset, ids, self.cam_
 ```
 to project the 3D annotation into the image coordinate system and get 2D groundtruth. Then it resizes and crops the image and generates a 17-channel heatmap base on the 2D groundtruth. During the training stage, data augmentation strategies are also applied, including random shift, scaling, color shifting and rotation. 
 
-##Evaluation
+## Evaluation
 Running the shell scripts we provide and you will see the accuracy.
 
 For 2D evaluation, we use the metric PCK@0.2, which was purposed by paper[1]. Results are shown below:
@@ -84,7 +84,7 @@ For 3D evaluation, we compute the average absolute value of the angular error fo
 
 For more results, please refer to our [paper](https://arxiv.org/abs/1812.00725).
 
-##References
+## References
 [1] Yi Yang and Deva Ramanan. Articulated human detection
 with flexible mixtures of parts. IEEE transactions on pattern
 analysis and machine intelligence, 35(12):2878–2890, 2013.

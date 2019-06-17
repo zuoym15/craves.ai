@@ -149,7 +149,7 @@ class Arm(data.Dataset):
 
             if self.anno_type == '3d':
                 joint_2d, vertex_2d, img_path = get_joint_vertex_2d(self.dataset, ids, self.cam_name, self.actor_name)
-                joint_2d = joint_2d[1:]
+                joint_2d = joint_2d[1:] #discard the first joint, as we do not predict it.
 
                 with open(os.path.join(self.meta_dir, 'vertex.json'),'r') as f: #from raw vertexs to final keypoints
                     vertex_seq = json.load(f)

@@ -44,7 +44,7 @@ No. minibatches in validation set:72
 Evaluation only
 Processing |################################| (72/72) Data: 0.000000s | Batch: 0.958s | Total: 0:01:08 | ETA: 0:00:01 | Loss: 0.0009 | Acc:  0.9946
 ```
-As you can see, the overall accuracy on the lab dataset is 99.46% under the PCK/@0.5 metric.
+As you can see, the overall accuracy on the lab dataset is 99.46% under the PCK@0.2 metric.
 
 Other shell scripts you may want to try:
 

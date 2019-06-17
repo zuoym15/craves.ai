@@ -77,7 +77,7 @@ to project the 3D annotation into the image coordinate system and get 2D groundt
 Running the shell scripts we provide and you will see the accuracy.
 
 For 2D evaluation, we use the metric PCK@0.2, which was purposed by paper[1]. Results are shown below:
-![table_1](./table_2d.jpg)
+![table_1](./table_2d.JPG)
 
 For 3D evaluation, we compute the average absolute value of the angular error for the four joints. The average error on lab dataset is 4.8 degrees and some qualitative results are shown below:
 ![3d_results](./image12.jpg)

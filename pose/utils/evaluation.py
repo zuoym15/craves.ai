@@ -110,14 +110,16 @@ def final_preds(output, center, scale, res):
 
     return preds
 
-def d3_acc(preds, gts):
+def d3_acc(preds, gts, percent = .5):
     num_samples = len(preds)
 
     acc = np.zeros_like(preds[0])
 
     hit = 0
 
-    miss_list = []
+    # miss_list = []
+    max_error_list = [] #max angle error for each image
+    res_list = []
 
     for i in range(num_samples):
         pred = np.array(preds[i])
@@ -126,15 +128,24 @@ def d3_acc(preds, gts):
         res = np.abs(pred - gt)
 
         res[0:7] = np.abs((res[0:7] + 180.0) % 360.0 - 180.0)
+        max_error_list.append(np.max(res[0:4]))
+        res_list.append(res)
 
-        if not np.any(res[0:4]>10): #false prediction
-            acc += res
-            hit = hit + 1
 
-        else:
-            miss_list.append(i)
+        # if not np.any(res[0:4]>10): #false prediction
+        #     acc += res
+        #     hit = hit + 1
+
+        # else:
+        #     miss_list.append(i)
+
+    top_n = int(percent * num_samples) #take top N images with smallesr error.
+    sorted_list = np.argsort(max_error_list)
+
+    for i in range(top_n):
+        acc += res_list[sorted_list[i]]
              
-    return (acc/hit)[0:4]
+    return (acc/top_n)[:4]
 
 class AverageMeter(object):
     """Computes and stores the average and current value"""

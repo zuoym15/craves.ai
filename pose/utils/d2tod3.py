@@ -311,12 +311,12 @@ def d2tod3(data_dir, meta_dir, estimate_cam = True, estimate_intrinsic = False, 
                 valid_keypoint_list.append(j)
 
         print("testing: {}".format(file_name_list[i]))
-        print("valid key point number: {}".format(len(valid_keypoint_list)))
+        # print("valid key point number: {}".format(len(valid_keypoint_list)))
 
         Reprojection = np.zeros((2,uv.shape[1]))
 
         if len(valid_keypoint_list) < 12:
-            print("key point not enough!")
+            # print("key point not enough!")
             x_deg = np.zeros(num_joints+6)
             min_error = 100
             d3_pred[file_name_list[i]] = {'preds':x_deg.tolist(), 'error':min_error, 'num_valid_key':len(valid_keypoint_list), 'x_raw':x_deg.tolist()}
@@ -333,7 +333,7 @@ def d2tod3(data_dir, meta_dir, estimate_cam = True, estimate_intrinsic = False, 
             em_steps = 1
 
         for em_step in range(em_steps):
-            print(x)
+            # print(x)
             last_x = x
 
             if em_step != 0: #calculate new uv based on last reprojection result
@@ -429,7 +429,7 @@ def d2tod3(data_dir, meta_dir, estimate_cam = True, estimate_intrinsic = False, 
         x_deg[1] = x_deg[1] - 90
         x_deg[3] = x_deg[3] - x_deg[2]
         x_deg[2] = x_deg[2] - x_deg[1]
-        print(x_deg) 
+        # print(x_deg) 
         print('{}:{}, error:{}'.format(i+1,hit,min_error))
 
         d3_pred[file_name_list[i]] = {'preds':x_deg.tolist(), 'error':min_error, 'num_valid_key':len(valid_keypoint_list), 'x_raw':x.tolist()}

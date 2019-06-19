@@ -83,7 +83,7 @@ def main(args):
     model = torch.nn.DataParallel(model).cuda()
 
     # define loss function (criterion) and optimizer
-    criterion = torch.nn.MSELoss(size_average=True).cuda()
+    criterion = torch.nn.MSELoss(reduction='mean').cuda()
 
     optimizer = torch.optim.RMSprop(model.parameters(), 
                                 lr=args.lr,

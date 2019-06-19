@@ -1,13 +1,14 @@
 ## Overview
+
 We generated **5,000** synthetic images in Unreal Engine 4 with UnrealCV with randomized camera parameters, lighting conditions, arm poses and
 background augmentation. Among them, 4,500 are used for training and the remaining 500 for validation. This dataset is referred to as the virtual (synthetic) dataset.
 
-In the real environments, we collected and manually annotated
-two sets of data. The first one is named the **lab dataset**, which contains more than 20,000 frames captured by a 720P Webcam. We manually chose **428** key frames and annotated them. We deliberately put distractors, e.g. colorful boxes, dices and balls, to make the dataset more difficult.
+In the real environments, we collected and manually annotated two sets of data. The first one is named the **lab dataset**, which contains more than 20,000 frames captured by a 720P Webcam. We manually chose **428** key frames and annotated them. We deliberately put distractors, e.g. colorful boxes, dices and balls, to make the dataset more difficult.
 
-The second part of real-world image data, the **YouTube dataset**, is crawled from YouTube, which contains 109 videos with the OWI-535 arm. This is a largely diversified collection, in which the arm may even be modded, i.e., the geometric constraints may not hold perfectly. We sampled **275** frames and manually annotated the visibility as well as position for each 2D keypoint.
+The second part of real-world image data, the **YouTube dataset**, is crawled from YouTube, which contains 109 videos with the OWI-535 arm. This is a largely diversified collection, in which the arm may even be modded, i.e., the geometric constraints may not hold perfectly. We sampled **275** frames and manually annotated the visibility as well as position for each 2D keypoint. The complete list of youtube videos can be found [here](https://www.youtube.com/playlist?list=PLOnBc7A9ZnwMGnthPtaoB8SR-TTvcfC1P) yoand can be downloaded with [youtube-dl](https://github.com/youtube-dl/youtube-dl). 
 
-There is another dataset for finetuning the model. The image is captured under the same environment as the lab dataset but from different videos. The annotation of this dataset is done by human but by the model itself. 
+Besides these three datasets, we also released images for finetuning the model in the real domain. These images are captured under the same environment as the lab dataset but from different videos. No annotation for these images and they are used for domain adaptation.
+
 Please refer to our [paper](https://arxiv.org/abs/1812.00725) for technical details.
 
 ## Browse

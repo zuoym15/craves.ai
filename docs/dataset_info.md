@@ -5,7 +5,7 @@ background augmentation. Among them, 4,500 are used for training and the remaini
 
 In the real environments, we collected and manually annotated two sets of data. The first one is named the **lab dataset**, which contains more than 20,000 frames captured by a 720P Webcam. We manually chose **428** key frames and annotated them. We deliberately put distractors, e.g. colorful boxes, dices and balls, to make the dataset more difficult.
 
-The second part of real-world image data, the **YouTube dataset**, is crawled from YouTube, which contains 109 videos with the OWI-535 arm. This is a largely diversified collection, in which the arm may even be modded, i.e., the geometric constraints may not hold perfectly. We sampled **275** frames and manually annotated the visibility as well as position for each 2D keypoint. The complete list of youtube videos can be found [here](https://www.youtube.com/playlist?list=PLOnBc7A9ZnwMGnthPtaoB8SR-TTvcfC1P) yoand can be downloaded with [youtube-dl](https://github.com/youtube-dl/youtube-dl). 
+The second part of real-world image data, the **YouTube dataset**, is crawled from YouTube, which contains 109 videos with the OWI-535 arm. This is a largely diversified collection, in which the arm may even be modded, i.e., the geometric constraints may not hold perfectly. We sampled **275** frames and manually annotated the visibility as well as position for each 2D keypoint. The complete list of youtube videos can be found [here](https://www.youtube.com/playlist?list=PLOnBc7A9ZnwMGnthPtaoB8SR-TTvcfC1P) and can be downloaded with [youtube-dl](https://github.com/youtube-dl/youtube-dl). 
 
 Besides these three datasets, we also released images for finetuning the model in the real domain. These images are captured under the same environment as the lab dataset but from different videos. No annotation for these images and they are used for domain adaptation.
 
@@ -68,11 +68,21 @@ The folder structure should look like this:
 ## Load the Data
 In our repo, we provide a [script](../pose/datasets/arm.py) that loads the raw data and generates groudtruth for training and validation (i.e. heatmaps). 
 
-For the YouTube dataset, it directly load 2D annotation and for the virtual and lab dataset, it first does the function call 
+For the YouTube dataset, it directly load 2D annotation and for the virtual and lab dataset, it first does the function call:
 ```
 joint_2d, vertex_2d, img_path = get_joint_vertex_2d(self.dataset, ids, self.cam_name, self.actor_name)
 ```
-to project the 3D annotation into the image coordinate system and get 2D groundtruth. Then it resizes and crops the image and generates a 17-channel heatmap base on the 2D groundtruth. During the training stage, data augmentation strategies are also applied, including random shift, scaling, color shifting and rotation. 
+Specifically, it utilizes the dataset class and camera class provided by UnrealCV.
+
+The dataset class loads the camera location and rotation:
+```
+cams_info = dataset.get_cam_info(cams, ids)
+```
+and the camera class project the 3D annotation into the image coordinate system and get 2D groundtruth:
+```
+points2d = cam.project_to_2d(points3d)
+```
+Finally, the images is resized and cropped and a 17-channel heatmap is generated base on the 2D groundtruth. During the training stage, data augmentation strategies are applied, including random shift, scaling, color shifting and rotation. 
 
 ## Evaluation
 Running the shell scripts we provide and you will see the accuracy.

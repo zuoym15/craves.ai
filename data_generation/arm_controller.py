@@ -22,18 +22,22 @@ def data_sampler(num_data, data_dir, rand_cam = True):
 
     dist = 600 #distance from cam to origin
 
-    if not os.path.isdir(os.path.join(data_dir,'angles')):
-        print('creating path: ' + os.path.join(data_dir,'angles'))
-        os.mkdir(os.path.join(data_dir,'angles'))
+    # if not os.path.isdir(os.path.join(data_dir,'angles')):
+    #     print('creating path: ' + os.path.join(data_dir,'angles'))
+    #     os.mkdir(os.path.join(data_dir,'angles'))
 
     client.request('vset /camera/1/fov 90')
-
     sample_id = 0
 
     # res = client.request('vset /arm/random_pose true')
     while True:
         if sample_id >= num_data:
             break
+
+        texture_filename = os.path.abspath('../background_img/000000000001.jpg')
+        client.request('vset /env/floor/texture %s' % texture_filename)
+        client.request('vset /env/sky/texture %s' % texture_filename)
+        client.request('vset /env/random_lighting')
 
         rotation = random.randint(-130,130)
         base = random.randint(-90, 60)
@@ -50,7 +54,8 @@ def data_sampler(num_data, data_dir, rand_cam = True):
         # elbow = random.randint(min_elbow,70)
         # wrist = random.randint(-30,30)
         gripper = 0
-        client.request('vset /arm {rotation} {base} {elbow} {wrist} {gripper}'.format(**locals()))
+        #client.request('vset /arm {rotation} {base} {elbow} {wrist} {gripper}'.format(**locals()))
+        client.request('vset /arm/owi535/pose {rotation} {base} {elbow} {wrist} {gripper}'.format(**locals()))
 
         if rand_cam:
 
@@ -75,16 +80,18 @@ def data_sampler(num_data, data_dir, rand_cam = True):
             z = int(-dist*sin(pitch*pi/180))
             client.request('vset /camera/1/location {x} {y} {z}'.format(**locals()))
 
-        tip_z = float(client.request('vget /arm/tip_pose').split()[2])
+        # print(client.request('vget /arm/tip_pose'))
+
+        tip_z = float(client.request('vget /arm/owi535/tip_pose').split()[2])
 
         if tip_z > 0:
 
-            obj = [rotation, base, elbow, wrist, -pitch, yaw-180, -roll, x, y, z]
+            # obj = [rotation, base, elbow, wrist, -pitch, yaw-180, -roll, x, y, z]
 
-            with open(os.path.join(data_dir,'angles',str(sample_id).zfill(8)+'.json'),'w') as f:
-                json.dump(obj, f)
+            # with open(os.path.join(data_dir,'angles',str(sample_id).zfill(8)+'.json'),'w') as f:
+            #     json.dump(obj, f)
 
-            client.request('vset /data_capture/capture_frame')
+            client.request('vset /data_capture/capture_frame ' + data_dir)
             print("#{sample_id}: {rotation}, {base}, {elbow}，{wrist}".format(**locals()))
             time.sleep(0.1)
 
@@ -277,9 +284,9 @@ if __name__ == "__main__":
     change the data_dir to the folder where captured data is saved
     '''
 
-    data_dir = '' 
+    data_dir = "C:\\tmp" 
     client.connect()
-    data_sampler(data_dir, 100)
+    data_sampler(100, data_dir)
 
     
 

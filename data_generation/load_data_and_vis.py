@@ -1,4 +1,6 @@
 import sys
+sys.path.append('..')
+
 from unreal.arm import get_joint_2d
 import unreal.virtual_db as vdb
 import numpy as np
@@ -13,10 +15,9 @@ from pose.utils.evaluation import *
 
 if __name__ == "__main__":
 
-
-    db_root_dir = './data/20181107/'
-    meta_dir = './data/meta/17_vertex'
-    bg_dir = './background_img'
+    db_root_dir = '../data/20181107/'
+    meta_dir = '../data/meta/17_vertex'
+    bg_dir = '../background_img'
     cams = 'FusionCameraActor3_2'
 
     Arm = datasets.Arm(db_root_dir, meta_dir, bg_dir, cams, anno_type = '3d', train = True, training_set_percentage = 0.9)
@@ -25,7 +26,7 @@ if __name__ == "__main__":
 
         inp, target, meta = Arm.__getitem__(i)
 
-        meanstd_file = './datasets/arm/mean.pth.tar'
+        meanstd_file = '../datasets/arm/mean.pth.tar'
         meanstd = torch.load(meanstd_file)
         mean = meanstd['mean']
 

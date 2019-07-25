@@ -34,7 +34,8 @@ class Arm(data.Dataset):
     def __init__(self, img_folder, meta_dir, random_bg_dir, cam_name, anno_type, inp_res=256, out_res=64, train=True, sigma=1, training_set_percentage = 0.9,
                  label_type='Gaussian',  scales = [0.7, 0.8, 0.9, 1, 1.2, 1.4, 1.6], multi_scale = False, ignore_invis_pts = False, replace_bg = False):
         self.scales = scales
-        self.actor_name = "RobotArmActor_3"
+        #self.actor_name = "RobotArmActor_3"
+        #self.actor_name = "owi535"
         self.img_folder = img_folder    # root image folders
         self.meta_dir = meta_dir
         self.is_train = train           # training set or test set
@@ -52,7 +53,13 @@ class Arm(data.Dataset):
         if self.anno_type == '3d':
             self.dataset = vdb.Dataset(img_folder)
             ids = self.dataset.get_ids()
-            self.color = self.dataset.get_annotation_color()[self.actor_name]
+            annotation_colors = self.dataset.get_annotation_color()
+            if annotation_colors.__contains__("owi535"):
+                self.actor_name = "owi535" #new version
+            else:
+                self.actor_name = "RobotArmActor_3" #old version
+
+            self.color = annotation_colors[self.actor_name]
 
             split = round(len(ids)*training_set_percentage) #90% for training, 10% for validation
             self.train = ids[:split]

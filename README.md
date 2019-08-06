@@ -72,6 +72,7 @@ pip install unrealcv imageio
 cd ./data_generation
 python demo_capture.py
 ```
+Generated data are saved in `./data/new_data` by default. You can visualize the groundtruth with the script `./data_generation/load_data_and_vis.py`.
 
 ## Control System
 

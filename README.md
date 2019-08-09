@@ -61,7 +61,7 @@ The 2D pose estimation module is developed based on [pytorch-pose](https://githu
 
 ## Data Generation from Simulator
 
-Download the binary for [Windows](cs.jhu.edu/~qiuwch/WinArm_07162019.zip) or [Linux](https://cs.jhu.edu/~qiuwch/craves/sim/arm-0610.zip) (tested in Ubuntu 16.04) **needs an update here**.
+Download the binary for [Windows](https://cs.jhu.edu/~qiuwch/craves/sim/arm-win-0808.zip) or [Linux](https://cs.jhu.edu/~qiuwch/craves/sim/arm-linux-0808.zip) (tested in Ubuntu 16.04).
 
 Unzip and run `./LinuxNoEditor/ArmUE4.sh`.
 

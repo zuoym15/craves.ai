@@ -63,7 +63,9 @@ class Dataset:
         ''' Get 3d annotation of skeleton '''
         vertex_info = [] 
         for id in ids:
-            json_filename = os.path.join(self.db_root_dir, 'vertex/{id:08}.json'.format(**locals()))
+            # json_filename = os.path.join(self.db_root_dir, 'vertex/{id:08}.json'.format(**locals()))
+            json_filename = os.path.join(self.db_root_dir, 'puppeteer/{id:08}.json'.format(**locals()))
+            '''in the new version of the generation tool, the vertex info are saved in puppeteer subfolder rather than vertex subfolder.'''
             data = json.load(open(json_filename))
             vertex_info.append(data)
         return vertex_info

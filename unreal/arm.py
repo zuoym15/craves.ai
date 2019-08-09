@@ -22,7 +22,10 @@ def f2fov(f, width):
 def get_vertex_2d_raw(dataset, ids, cam, actor_name):
     vertexs = dataset.get_d3_vertex(ids)
     #actor_name = "OWI-arm-baked-pivot_2"; 
-    vertex = vertexs[0][actor_name] 
+    if isinstance(vertexs[0], dict): #fit to the new data generation tool
+        vertex = vertexs[0][actor_name] 
+    else:
+        vertex = vertexs[0]
     points3d = np.array([[v['X'], v['Y'], v['Z']] for v in vertex])
     points2d = cam.project_to_2d(points3d)
     return points2d

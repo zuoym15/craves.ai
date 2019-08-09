@@ -9,6 +9,8 @@ The craves.ai project controls a toy robotic arm (OWI-535) with a single RGB cam
 Here are some visualization result from the YouTube dataset:
 
 ![youtube_heatmap](docs/youtube_heatmap.png)
+ 
+`./data_generation/load_data_and_vis.py` contains samples on how to visualize the images and their annotations.
 
 
 
@@ -59,7 +61,7 @@ The 2D pose estimation module is developed based on [pytorch-pose](https://githu
 
 ## Data Generation from Simulator
 
-Download the linux binary from [here](https://cs.jhu.edu/~qiuwch/craves/sim/arm-0610.zip) (tested in Ubuntu 16.04).
+Download the binary for [Windows](https://cs.jhu.edu/~qiuwch/craves/sim/arm-win-0808.zip) or [Linux](https://cs.jhu.edu/~qiuwch/craves/sim/arm-linux-0808.zip) (tested in Ubuntu 16.04).
 
 Unzip and run `./LinuxNoEditor/ArmUE4.sh`.
 
@@ -67,8 +69,10 @@ Run the following script to generate images and ground truth
 
 ```bash
 pip install unrealcv imageio
-python demo_capture.py frame.png
+cd ./data_generation
+python demo_capture.py
 ```
+Generated data are saved in `./data/new_data` by default. You can visualize the groundtruth with the script `./data_generation/load_data_and_vis.py`.
 
 ## Control System
 

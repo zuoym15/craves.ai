@@ -18,7 +18,7 @@ Here are some visualization result from the YouTube dataset:
 
 We created three datasets for this project, namely `synthetic`, `lab` and `youtube`. 
 
-Download the datasets from [here](http://www.cs.jhu.edu/~qiuwch/craves/dataset/).
+Download the datasets from [here](https://www.modelscope.cn/datasets/qiuwch/craves).
 
 For the usage of these datasets, please refer to [here](docs/dataset_info.md).
 
